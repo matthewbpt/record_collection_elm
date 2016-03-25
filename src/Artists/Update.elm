@@ -26,15 +26,18 @@ update action model =
       in
         ( model.artists, Effects.map HopAction (Hop.navigateTo path) )
 
-    CreateArtist ->
-      ( model.artists, createArtist new )
+    CreateOrUpdateArtist artist ->
+      ( model.artists, createArtist artist )
 
-    CreateArtistDone result ->
+    CreateOrUpdateArtistDone result ->
       case result of
         Ok artist ->
           let
+            filteredArtists =
+              List.filter (\a -> a.id /= artist.id) model.artists
+
             updatedArtists =
-              artist :: model.artists
+              artist :: filteredArtists
 
             fx =
               Task.succeed (EditArtist artist.id)
@@ -48,7 +51,7 @@ update action model =
     EditArtist id ->
       let
         path =
-          "/artists/" ++ (toString id)
+          "/artist/" ++ (toString id) ++ "/edit"
       in
         ( model.artists, Effects.map HopAction (Hop.navigateTo path) )
 

@@ -6,6 +6,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Routing
 import Artists.List
+import Artists.Edit
 import Html.Attributes exposing (..)
 import String
 
@@ -29,6 +30,9 @@ page address model =
     Routing.ArtistsView ->
       artistsPage address model
 
+    Routing.ArtistEditView ->
+      artistEditPage address model
+
     Routing.NotFoundView ->
       notFoundView
 
@@ -43,29 +47,30 @@ artistsPage address model =
     Artists.List.view (Signal.forwardTo address ArtistsAction) viewModel
 
 
+artistEditPage : Signal.Address Action -> AppModel -> Html.Html
+artistEditPage address model =
+  let
+    artistId =
+      model.routing.routerPayload.params
+        |> Dict.get "id"
+        |> Maybe.withDefault ""
 
---artistEditPage : Signal.Address Action -> AppModel -> Html.Html
---artistEditPage address model =
---  let
---    artistId =
---      model.routing.routerPayload.params
---        |> Dict.get "id"
---        |> Maybe.withDefault ""
---    maybePlayer =
---      model.artists
---        |> List.filter (\artist -> (toString artist.id) == artistId)
---        |> List.head
---  in
---    case maybePlayer of
---      Just artist ->
---        let
---          viewModel =
---            { artist = artist
---            }
---        in
---          Artists.Edit.view (Signal.forwardTo address ArtistsAction) viewModel
---      Nothing ->
---        notFoundView
+    maybePlayer =
+      model.artists
+        |> List.filter (\artist -> (toString artist.id) == artistId)
+        |> List.head
+  in
+    case maybePlayer of
+      Just artist ->
+        let
+          viewModel =
+            { artist = artist
+            }
+        in
+          Artists.Edit.view (Signal.forwardTo address ArtistsAction) viewModel
+
+      Nothing ->
+        notFoundView
 
 
 notFoundView : Html.Html

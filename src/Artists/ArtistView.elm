@@ -1,0 +1,2 @@
+module Artists.ArtistView (..) where
+

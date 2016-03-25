@@ -8,8 +8,8 @@
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 4000"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "matthewbpt@gmail.com",
+  "license": "BSD3",
   "dependencies": {
     "basscss": "^7.1.1",
     "css-loader": "^0.23.1",

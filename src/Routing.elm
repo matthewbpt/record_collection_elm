@@ -19,6 +19,7 @@ type Action
   = HopAction Hop.Action
   | ShowArtists Hop.Payload
   | ShowNotFound Hop.Payload
+  | ShowArtistEdit Hop.Payload
   | NavigateTo String
   | NoOp
 
@@ -32,6 +33,7 @@ NotFoundView is necessary when no route matches the location
 
 type AvailableViews
   = ArtistsView
+  | ArtistEditView
   | NotFoundView
 
 
@@ -77,6 +79,9 @@ update action model =
     ShowNotFound payload ->
       ( { model | view = NotFoundView, routerPayload = payload }, Effects.none )
 
+    ShowArtistEdit payload ->
+      ( { model | view = ArtistEditView, routerPayload = payload }, Effects.none )
+
     _ ->
       ( model, Effects.none )
 
@@ -92,6 +97,7 @@ routes : List ( String, Hop.Payload -> Action )
 routes =
   [ ( "/", ShowArtists )
   , ( "/artists", ShowArtists )
+  , ( "/artist/:id/edit", ShowArtistEdit )
   ]
 
 

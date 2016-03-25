@@ -73,10 +73,19 @@ editBtn address artist =
     [ i [ class "fa fa-pencil mr1" ] [], text "Edit" ]
 
 
+
+--viewBtn : Signal.Address Action -> Artist -> Html.Html
+--viewBtn address artist =
+--  [ class "btm regular"
+--  , onClick address (NoOp)
+--  ]
+--    [ i [ class "fa " ] ]
+
+
 addBtn : Signal.Address Action -> ViewModel -> Html.Html
 addBtn address model =
   button
-    [ class "btn", onClick address CreateArtist ]
+    [ class "btn", onClick address (CreateOrUpdateArtist new) ]
     [ i [ class "fa fa-user-plus mr1" ] []
     , text "Add artist"
     ]

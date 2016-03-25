@@ -8,8 +8,8 @@ import Http
 type Action
   = NoOp
   | ListArtists
-  | CreateArtist
-  | CreateArtistDone (Result Http.Error Artist)
+  | CreateOrUpdateArtist Artist
+  | CreateOrUpdateArtistDone (Result Http.Error Artist)
   | EditArtist Int
   | ArtistsFetched (Result Http.Error (List Artist))
   | HopAction Hop.Action

@@ -82,5 +82,5 @@ createArtist artist =
     Http.send Http.defaultSettings config
       |> Http.fromJson artistDecoder
       |> Task.toResult
-      |> Task.map CreateArtistDone
+      |> Task.map CreateOrUpdateArtistDone
       |> Effects.task
