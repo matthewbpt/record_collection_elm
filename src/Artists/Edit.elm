@@ -82,7 +82,7 @@ inputName address model =
     input
       [ class "field-light"
       , value artist.name
-      , on "change" targetValue (\str -> Signal.message address (CreateOrUpdate { artist | name = str }))
+      , on "change" targetValue (\str -> Signal.message address (CreateOrUpdateArtist { artist | name = str }))
       ]
       []
 
