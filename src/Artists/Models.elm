@@ -13,4 +13,4 @@ type alias Artist =
 
 new : Artist
 new =
-  Artist 0 "" "" "" (Just 0)
+  Artist 0 "" "" "" (Nothing)

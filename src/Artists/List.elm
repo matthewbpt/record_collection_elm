@@ -5,10 +5,12 @@ import Html.Attributes exposing (class, value, href)
 import Artists.Models exposing (..)
 import Artists.Actions exposing (..)
 import Html.Events exposing (onClick, on, targetValue)
+import String exposing (contains, toLower)
 
 
 type alias ViewModel =
   { artists : List Artist
+  , filter : String
   }
 
 
@@ -32,22 +34,33 @@ nav address model =
 
 list : Signal.Address Action -> ViewModel -> Html.Html
 list address model =
-  div
-    []
-    [ table
-        [ class "table-light" ]
-        [ thead
-            []
-            [ tr
-                []
-                [ th [] [ text "Id" ]
-                , th [] [ text "Name" ]
-                , th [] [ text "Actions" ]
-                ]
-            ]
-        , tbody [] (List.map (artistRow address model) model.artists)
-        ]
-    ]
+  let
+    filteredArtists =
+      if model.filter == "" then
+        model.artists
+      else
+        List.filter (\artist -> contains (toLower model.filter) (toLower artist.name)) model.artists
+
+    sortedArtists =
+      List.sortBy .sortName filteredArtists
+  in
+    div
+      []
+      [ formFilter address model
+      , table
+          [ class "table-light" ]
+          [ thead
+              []
+              [ tr
+                  []
+                  [ th [] [ text "Id" ]
+                  , th [] [ text "Name" ]
+                  , th [] [ text "Actions" ]
+                  ]
+              ]
+          , tbody [] (List.map (artistRow address model) sortedArtists)
+          ]
+      ]
 
 
 artistRow : Signal.Address Action -> ViewModel -> Artist -> Html.Html
@@ -55,7 +68,7 @@ artistRow address model artist =
   tr
     []
     [ td [] [ text (toString artist.id) ]
-    , td [] [ text artist.name ]
+    , td [ onClick address (ShowArtist artist) ] [ text artist.name ]
     , td
         []
         [ editBtn address artist
@@ -98,3 +111,28 @@ deleteBtn address artist =
     , onClick address (NoOp)
     ]
     [ i [ class "fa fa-trash mr1" ] [], text "Delete" ]
+
+
+formFilter : Signal.Address Action -> ViewModel -> Html.Html
+formFilter address model =
+  div
+    [ class "clearfix py1" ]
+    [ div [ class "col col-2" ] [ text "Filter" ]
+    , div
+        [ class "col col-2" ]
+        [ inputFilter address model ]
+    ]
+
+
+inputFilter : Signal.Address Action -> ViewModel -> Html.Html
+inputFilter address model =
+  let
+    filter =
+      model.filter
+  in
+    input
+      [ class "field-light"
+      , value filter
+      , on "keyup" targetValue (\str -> Signal.message address (FilterArtists str))
+      ]
+      []

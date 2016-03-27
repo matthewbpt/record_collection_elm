@@ -6,6 +6,7 @@ import Routing
 
 type alias AppModel =
   { artists : List Artist
+  , filter : String
   , routing : Routing.Model
   , errorMessage : String
   }
@@ -14,6 +15,7 @@ type alias AppModel =
 initialModel : AppModel
 initialModel =
   { artists = []
+  , filter = ""
   , routing = Routing.initialModel
   , errorMessage = ""
   }

@@ -13,10 +13,11 @@ import Task
 
 type alias UpdateModel =
   { artists : List Artist
+  , filter : String
   }
 
 
-update : Action -> UpdateModel -> ( List Artist, Effects Action )
+update : Action -> UpdateModel -> ( UpdateModel, Effects Action )
 update action model =
   case action of
     ListArtists ->
@@ -24,10 +25,10 @@ update action model =
         path =
           "/artists/"
       in
-        ( model.artists, Effects.map HopAction (Hop.navigateTo path) )
+        ( model, Effects.map HopAction (Hop.navigateTo path) )
 
     CreateOrUpdateArtist artist ->
-      ( model.artists, createArtist artist )
+      ( model, createArtist artist )
 
     CreateOrUpdateArtistDone result ->
       case result of
@@ -42,29 +43,42 @@ update action model =
             fx =
               Task.succeed (EditArtist artist.id)
                 |> Effects.task
+
+            updatedModel =
+              { artists = updatedArtists, filter = model.filter }
           in
-            ( updatedArtists, fx )
+            ( updatedModel, fx )
 
         Err error ->
-          ( model.artists, Effects.none )
+          ( model, Effects.none )
 
     EditArtist id ->
       let
         path =
           "/artist/" ++ (toString id) ++ "/edit"
       in
-        ( model.artists, Effects.map HopAction (Hop.navigateTo path) )
+        ( model, Effects.map HopAction (Hop.navigateTo path) )
+
+    ShowArtist artist ->
+      let
+        path =
+          "/artist/" ++ artist.name
+      in
+        ( model, Effects.map HopAction (Hop.navigateTo path) )
 
     ArtistsFetched result ->
       case result of
         Ok artists ->
-          ( artists, Effects.none )
+          ( { artists = artists, filter = model.filter }, Effects.none )
 
         Err _ ->
-          ( model.artists, Effects.none )
+          ( model, Effects.none )
+
+    FilterArtists filter ->
+      ( { artists = model.artists, filter = filter }, Effects.none )
 
     HopAction _ ->
-      ( model.artists, Effects.none )
+      ( model, Effects.none )
 
     NoOp ->
-      ( model.artists, Effects.none )
+      ( model, Effects.none )

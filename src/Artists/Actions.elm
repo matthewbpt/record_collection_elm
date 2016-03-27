@@ -13,3 +13,5 @@ type Action
   | EditArtist Int
   | ArtistsFetched (Result Http.Error (List Artist))
   | HopAction Hop.Action
+  | ShowArtist Artist
+  | FilterArtists String

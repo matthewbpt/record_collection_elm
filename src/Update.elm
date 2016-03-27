@@ -24,14 +24,16 @@ update action model =
         updateModel =
           { artists =
               model.artists
+          , filter =
+              model.filter
               --, showErrorAddress = Signal.forwardTo actionsMailbox.address ShowError
               --, deleteConfirmationAddress = askDeleteConfirmationMailbox.address
           }
 
-        ( updatedArtists, fx ) =
+        ( updatedModel, fx ) =
           Artists.Update.update subAction updateModel
       in
-        ( { model | artists = updatedArtists }, Effects.map ArtistsAction fx )
+        ( { model | artists = updatedModel.artists, filter = updatedModel.filter }, Effects.map ArtistsAction fx )
 
     ShowError message ->
       ( { model | errorMessage = message }, Effects.none )
