@@ -26,8 +26,6 @@ update action model =
               model.artists
           , filter =
               model.filter
-              --, showErrorAddress = Signal.forwardTo actionsMailbox.address ShowError
-              --, deleteConfirmationAddress = askDeleteConfirmationMailbox.address
           }
 
         ( updatedModel, fx ) =

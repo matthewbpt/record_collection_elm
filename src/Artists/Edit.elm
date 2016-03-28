@@ -62,7 +62,7 @@ inputName address model =
     input
       [ class "field-light"
       , value artist.name
-      , on "keyup" targetValue (\str -> Signal.message address (CreateOrUpdateArtist { artist | name = str }))
+      , on "change" targetValue (\str -> Signal.message address (CreateOrUpdateArtist { artist | name = str }))
       ]
       []
 
@@ -89,7 +89,7 @@ inputSortName address model =
     input
       [ class "field-light"
       , value artist.sortName
-      , on "keyup" targetValue (\str -> Signal.message address (CreateOrUpdateArtist { artist | sortName = str }))
+      , on "change" targetValue (\str -> Signal.message address (CreateOrUpdateArtist { artist | sortName = str }))
       ]
       []
 

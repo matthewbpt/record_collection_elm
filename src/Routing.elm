@@ -102,7 +102,7 @@ routes : List ( String, Hop.Payload -> Action )
 routes =
   [ ( "/", ShowArtists )
   , ( "/artists", ShowArtists )
-  , ( "/artist/:id/edit", ShowArtistEdit )
+  , ( "/artist/:artist/edit", ShowArtistEdit )
   , ( "/artist/:artist", ShowArtist )
   ]
 

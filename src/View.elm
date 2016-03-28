@@ -81,14 +81,14 @@ artistViewPage address model =
 artistEditPage : Signal.Address Action -> AppModel -> Html.Html
 artistEditPage address model =
   let
-    artistId =
+    artistName =
       model.routing.routerPayload.params
-        |> Dict.get "id"
+        |> Dict.get "artist"
         |> Maybe.withDefault ""
 
     maybeArtist =
       model.artists
-        |> List.filter (\artist -> (toString artist.id) == artistId)
+        |> List.filter (\artist -> artist.name == artistName)
         |> List.head
   in
     case maybeArtist of
