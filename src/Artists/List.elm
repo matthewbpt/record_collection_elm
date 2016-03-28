@@ -1,7 +1,7 @@
 module Artists.List (..) where
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href)
+import Html.Attributes exposing (class, value, href, style)
 import Artists.Models exposing (..)
 import Artists.Actions exposing (..)
 import Html.Events exposing (onClick, on, targetValue)
@@ -53,8 +53,8 @@ list address model =
               []
               [ tr
                   []
-                  [ th [] [ text "Id" ]
-                  , th [] [ text "Name" ]
+                  [ th [] [ text "Name" ]
+                  , th [] [ text "Sort Name" ]
                   , th [] [ text "Actions" ]
                   ]
               ]
@@ -66,9 +66,9 @@ list address model =
 artistRow : Signal.Address Action -> ViewModel -> Artist -> Html.Html
 artistRow address model artist =
   tr
-    []
-    [ td [] [ text (toString artist.id) ]
-    , td [ onClick address (ShowArtist artist) ] [ text artist.name ]
+    [ style [ ( "cursor", "pointer" ) ] ]
+    [ td [ onClick address (ShowArtist artist) ] [ text artist.name ]
+    , td [ onClick address (ShowArtist artist) ] [ text artist.sortName ]
     , td
         []
         [ editBtn address artist
@@ -81,7 +81,7 @@ editBtn : Signal.Address Action -> Artist -> Html.Html
 editBtn address artist =
   button
     [ class "btn regular"
-    , onClick address (EditArtist artist.id)
+    , onClick address (EditArtist artist)
     ]
     [ i [ class "fa fa-pencil mr1" ] [], text "Edit" ]
 
@@ -98,7 +98,7 @@ editBtn address artist =
 addBtn : Signal.Address Action -> ViewModel -> Html.Html
 addBtn address model =
   button
-    [ class "btn", onClick address (CreateOrUpdateArtist new) ]
+    [ class "btn", onClick address (SaveArtist newArtist) ]
     [ i [ class "fa fa-user-plus mr1" ] []
     , text "Add artist"
     ]
@@ -108,7 +108,7 @@ deleteBtn : Signal.Address Action -> Artist -> Html.Html
 deleteBtn address artist =
   button
     [ class "btn regular mr1"
-    , onClick address (NoOp)
+    , onClick address (DeleteArtist artist)
     ]
     [ i [ class "fa fa-trash mr1" ] [], text "Delete" ]
 

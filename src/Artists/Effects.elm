@@ -28,6 +28,58 @@ createUrl =
   "/api/artist"
 
 
+deleteUrl : String
+deleteUrl =
+  "/api/artist"
+
+
+deleteArtist : Artist -> Effects Action
+deleteArtist artist =
+  let
+    body =
+      artistEncoded artist
+        |> Encode.encode 0
+        |> Http.string
+
+    config =
+      { verb = "DELETE"
+      , headers =
+          [ ( "Content-Type", "application/json" ) ]
+      , url = deleteUrl
+      , body = body
+      }
+  in
+    Http.send Http.defaultSettings config
+      |> Http.fromJson artistDecoder
+      |> Task.toResult
+      |> Task.map DeleteArtistDone
+      |> Effects.task
+
+
+createArtist : Artist -> Effects Action
+createArtist artist =
+  let
+    body =
+      artistEncoded artist
+        |> Encode.encode 0
+        |> Http.string
+
+    config =
+      { verb = "POST"
+      , headers =
+          [ ( "Content-Type", "application/json" )
+          ]
+      , url = createUrl
+      , body = body
+      }
+  in
+    Http.send Http.defaultSettings config
+      |> Http.fromJson artistDecoder
+      |> Task.toResult
+      |> Task.map SaveArtistDone
+      |> Effects.task
+
+
 
 -- DECODERS
 
@@ -60,27 +112,3 @@ artistEncoded artist =
   in
     list
       |> Encode.object
-
-
-createArtist : Artist -> Effects Action
-createArtist artist =
-  let
-    body =
-      artistEncoded artist
-        |> Encode.encode 0
-        |> Http.string
-
-    config =
-      { verb = "POST"
-      , headers =
-          [ ( "Content-Type", "application/json" )
-          ]
-      , url = createUrl
-      , body = body
-      }
-  in
-    Http.send Http.defaultSettings config
-      |> Http.fromJson artistDecoder
-      |> Task.toResult
-      |> Task.map CreateOrUpdateArtistDone
-      |> Effects.task

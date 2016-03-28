@@ -28,9 +28,26 @@ update action model =
         ( model, Effects.map HopAction (Hop.navigateTo path) )
 
     CreateOrUpdateArtist artist ->
+      let
+        filteredArtists =
+          List.filter (\a -> a.id /= artist.id) model.artists
+
+        updatedArtists =
+          artist :: filteredArtists
+
+        fx =
+          Task.succeed (EditArtist artist)
+            |> Effects.task
+
+        updatedModel =
+          { model | artists = updatedArtists }
+      in
+        ( updatedModel, fx )
+
+    SaveArtist artist ->
       ( model, createArtist artist )
 
-    CreateOrUpdateArtistDone result ->
+    SaveArtistDone result ->
       case result of
         Ok artist ->
           let
@@ -41,21 +58,43 @@ update action model =
               artist :: filteredArtists
 
             fx =
-              Task.succeed (EditArtist artist.id)
+              Task.succeed (EditArtist artist)
                 |> Effects.task
 
             updatedModel =
-              { artists = updatedArtists, filter = model.filter }
+              { model | artists = updatedArtists }
           in
             ( updatedModel, fx )
 
         Err error ->
           ( model, Effects.none )
 
-    EditArtist id ->
+    DeleteArtist artist ->
+      ( model, deleteArtist artist )
+
+    DeleteArtistDone result ->
+      case result of
+        Ok artist ->
+          let
+            newArtists =
+              List.filter (\a -> a.id /= artist.id) model.artists
+
+            updatedModel =
+              { model | artists = newArtists }
+
+            fx =
+              Task.succeed (ListArtists)
+                |> Effects.task
+          in
+            ( updatedModel, fx )
+
+        Err error ->
+          ( model, Effects.none )
+
+    EditArtist artist ->
       let
         path =
-          "/artist/" ++ (toString id) ++ "/edit"
+          "/artist/" ++ artist.name ++ "/edit"
       in
         ( model, Effects.map HopAction (Hop.navigateTo path) )
 
@@ -69,13 +108,13 @@ update action model =
     ArtistsFetched result ->
       case result of
         Ok artists ->
-          ( { artists = artists, filter = model.filter }, Effects.none )
+          ( { model | artists = artists }, Effects.none )
 
         Err _ ->
           ( model, Effects.none )
 
     FilterArtists filter ->
-      ( { artists = model.artists, filter = filter }, Effects.none )
+      ( { model | filter = filter }, Effects.none )
 
     HopAction _ ->
       ( model, Effects.none )
