@@ -1,15 +1,51 @@
 module Artists.Edit (..) where
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href, rows, cols)
+import Html.Attributes exposing (class, value, href, rows, cols, style)
 import Artists.Models exposing (..)
+import Albums.Models exposing (Album)
 import Artists.Actions exposing (..)
+
+
+--import Albums.Actions
+
+import Albums.List
 import Html.Events exposing (onClick, on, targetValue)
 
 
 type alias ViewModel =
   { artist : Artist
+  , albums : List Album
   }
+
+
+
+--list : Signal.Address Action -> ViewModel -> Html.Html
+--list address model =
+--  div
+--    []
+--    [ table
+--        [ class "table-light" ]
+--        [ thead
+--            []
+--            [ tr
+--                []
+--                [ th [] [ text "Title" ]
+--                , th [] [ text "Artist" ]
+--                , th [] [ text "Year" ]
+--                ]
+--            ]
+--        , tbody [] (List.map (albumRow address model) model.albums)
+--        ]
+--    ]
+--albumRow : Signal.Address Action -> ViewModel -> Album -> Html
+--albumRow address model album =
+--  tr
+--    [ style [ ( "cursor", "pointer" ) ] ]
+--    [ td [] [ text album.title ]
+--    , td [] [ text "some artist" ]
+--    , td [] [ text (toString album.year) ]
+--    ]
 
 
 view : Signal.Address Action -> ViewModel -> Html.Html
@@ -18,6 +54,7 @@ view address model =
     []
     [ nav address model
     , form address model
+    , Albums.List.genericAlbumList { albums = model.albums }
     ]
 
 

@@ -18,6 +18,7 @@ NavigateTo : Action to change the browser location
 type Action
   = HopAction Hop.Action
   | ShowArtists Hop.Payload
+  | ShowAlbums Hop.Payload
   | ShowNotFound Hop.Payload
   | ShowArtistEdit Hop.Payload
   | ShowArtist Hop.Payload
@@ -36,6 +37,7 @@ type AvailableViews
   = ArtistsView
   | ArtistView
   | ArtistEditView
+  | AlbumsView
   | NotFoundView
 
 
@@ -84,6 +86,9 @@ update action model =
     ShowArtistEdit payload ->
       ( { model | view = ArtistEditView, routerPayload = payload }, Effects.none )
 
+    ShowAlbums payload ->
+      ( { model | view = AlbumsView, routerPayload = payload }, Effects.none )
+
     ShowArtist payload ->
       ( { model | view = ArtistView, routerPayload = payload }, Effects.none )
 
@@ -104,6 +109,7 @@ routes =
   , ( "/artists", ShowArtists )
   , ( "/artist/:artist/edit", ShowArtistEdit )
   , ( "/artist/:artist", ShowArtist )
+  , ( "/albums", ShowAlbums )
   ]
 
 

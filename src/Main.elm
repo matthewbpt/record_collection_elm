@@ -10,6 +10,7 @@ import Update exposing (..)
 import View exposing (..)
 import Routing exposing (router)
 import Artists.Effects
+import Albums.Effects
 import Mailboxes exposing (..)
 
 
@@ -21,6 +22,7 @@ init =
   let
     fxs =
       [ Effects.map ArtistsAction Artists.Effects.fetchAll
+      , Effects.map AlbumsAction Albums.Effects.fetchAll
       ]
 
     fx =

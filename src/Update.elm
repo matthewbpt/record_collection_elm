@@ -6,7 +6,10 @@ import Models exposing (..)
 import Actions exposing (..)
 import Routing
 import Artists.Update
-import Mailboxes exposing (..)
+import Albums.Update
+
+
+--import Mailboxes exposing (..)
 
 
 update : Action -> AppModel -> ( AppModel, Effects Action )
@@ -18,6 +21,16 @@ update action model =
           Routing.update subAction model.routing
       in
         ( { model | routing = updatedRouting }, Effects.map RoutingAction fx )
+
+    AlbumsAction subAction ->
+      let
+        updateModel =
+          { albums = model.albums }
+
+        ( updatedModel, fx ) =
+          Albums.Update.update subAction updateModel
+      in
+        ( { model | albums = updatedModel.albums }, Effects.map AlbumsAction fx )
 
     ArtistsAction subAction ->
       let

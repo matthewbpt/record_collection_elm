@@ -5,6 +5,7 @@ import Dict
 import Actions exposing (..)
 import Models exposing (..)
 import Routing
+import Albums.List
 import Artists.List
 import Artists.Edit
 import Artists.ArtistView
@@ -31,6 +32,9 @@ page address model =
     Routing.ArtistsView ->
       artistsPage address model
 
+    Routing.AlbumsView ->
+      albumsPage address model
+
     Routing.ArtistEditView ->
       artistEditPage address model
 
@@ -39,6 +43,15 @@ page address model =
 
     Routing.NotFoundView ->
       notFoundView
+
+
+albumsPage : Signal.Address Action -> AppModel -> Html.Html
+albumsPage address model =
+  let
+    viewModel =
+      { albums = model.albums }
+  in
+    Albums.List.view (Signal.forwardTo address AlbumsAction) viewModel
 
 
 artistsPage : Signal.Address Action -> AppModel -> Html.Html
@@ -94,8 +107,12 @@ artistEditPage address model =
     case maybeArtist of
       Just artist ->
         let
+          albums =
+            List.filter (\album -> List.member artist.id album.artists) model.albums
+
           viewModel =
             { artist = artist
+            , albums = albums
             }
         in
           Artists.Edit.view (Signal.forwardTo address ArtistsAction) viewModel
