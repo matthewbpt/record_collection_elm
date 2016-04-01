@@ -19,42 +19,13 @@ type alias ViewModel =
   }
 
 
-
---list : Signal.Address Action -> ViewModel -> Html.Html
---list address model =
---  div
---    []
---    [ table
---        [ class "table-light" ]
---        [ thead
---            []
---            [ tr
---                []
---                [ th [] [ text "Title" ]
---                , th [] [ text "Artist" ]
---                , th [] [ text "Year" ]
---                ]
---            ]
---        , tbody [] (List.map (albumRow address model) model.albums)
---        ]
---    ]
---albumRow : Signal.Address Action -> ViewModel -> Album -> Html
---albumRow address model album =
---  tr
---    [ style [ ( "cursor", "pointer" ) ] ]
---    [ td [] [ text album.title ]
---    , td [] [ text "some artist" ]
---    , td [] [ text (toString album.year) ]
---    ]
-
-
 view : Signal.Address Action -> ViewModel -> Html.Html
 view address model =
   div
     []
     [ nav address model
     , form address model
-    , Albums.List.genericAlbumList { albums = model.albums }
+    , Albums.List.list address ShowAlbum { albums = model.albums }
     ]
 
 

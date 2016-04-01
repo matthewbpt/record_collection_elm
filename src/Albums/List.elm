@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, value, href, style)
 import Albums.Models exposing (..)
 import Albums.Actions exposing (..)
+import Html.Events exposing (onClick, on, targetValue)
 
 
 --import Html.Events exposing (onClick, on, targetValue)
@@ -20,21 +21,26 @@ view address model =
   div
     []
     [ nav address model
-    , list address model
+    , list address ShowAlbum model
     ]
+
+
+pointerStyle : Attribute
+pointerStyle =
+  style [ ( "cursor", "pointer" ) ]
 
 
 nav : Signal.Address Action -> ViewModel -> Html.Html
 nav address model =
   div
     [ class "clearfix mb2 white bg-black" ]
-    [ div [ class "left p2" ] [ text "Albums" ]
-      --, div [ class "right p1" ] [ addBtn address model ]
+    [ div [ class "left p2", pointerStyle, onClick address ListArtists ] [ text "Artists" ]
+    , div [ class "left p2", pointerStyle, onClick address ListAlbums ] [ text "Albums" ]
     ]
 
 
-genericAlbumList : ViewModel -> Html.Html
-genericAlbumList model =
+list : Signal.Address a -> ({ c | title : String, year : b } -> a) -> { d | albums : List { c | title : String, year : b } } -> Html
+list address clickAction model =
   div
     []
     [ table
@@ -43,54 +49,22 @@ genericAlbumList model =
             []
             [ tr
                 []
-                [ th [] [ text "Title" ]
+                [ th [] [ text "Titles" ]
                 , th [] [ text "Artist" ]
                 , th [] [ text "Year" ]
                 ]
             ]
-        , tbody [] (List.map (genericAlbumRow model) model.albums)
+        , tbody [] (List.map (albumRow address clickAction model) model.albums)
         ]
     ]
 
 
-list : Signal.Address Action -> ViewModel -> Html.Html
-list address model =
-  genericAlbumList model
-
-
-
---div
---  []
---  [ table
---      [ class "table-light" ]
---      [ thead
---          []
---          [ tr
---              []
---              [ th [] [ text "Title" ]
---              , th [] [ text "Artist" ]
---              , th [] [ text "Year" ]
---              ]
---          ]
---      , tbody [] (List.map (albumRow address model) model.albums)
---      ]
---  ]
-
-
-genericAlbumRow : ViewModel -> Album -> Html
-genericAlbumRow model album =
+albumRow : Signal.Address a -> ({ c | title : String, year : b } -> a) -> d -> { c | title : String, year : b } -> Html
+albumRow address clickAction model album =
   tr
-    [ style [ ( "cursor", "pointer" ) ] ]
-    [ td [] [ text album.title ]
-    , td [] [ text "some artist" ]
-    , td [] [ text (toString album.year) ]
+    [ style [ ( "cursor", "pointer" ) ]
+    , onClick address (clickAction album)
     ]
-
-
-albumRow : Signal.Address Action -> ViewModel -> Album -> Html
-albumRow address model album =
-  tr
-    [ style [ ( "cursor", "pointer" ) ] ]
     [ td [] [ text album.title ]
     , td [] [ text "some artist" ]
     , td [] [ text (toString album.year) ]

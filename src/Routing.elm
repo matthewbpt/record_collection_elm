@@ -19,6 +19,7 @@ type Action
   = HopAction Hop.Action
   | ShowArtists Hop.Payload
   | ShowAlbums Hop.Payload
+  | ShowAlbum Hop.Payload
   | ShowNotFound Hop.Payload
   | ShowArtistEdit Hop.Payload
   | ShowArtist Hop.Payload
@@ -38,6 +39,7 @@ type AvailableViews
   | ArtistView
   | ArtistEditView
   | AlbumsView
+  | AlbumView
   | NotFoundView
 
 
@@ -64,19 +66,9 @@ initialModel =
 update : Action -> Model -> ( Model, Effects Action )
 update action model =
   case action of
-    {-
-    NavigateTo
-    Called from our application views e.g. by clicking on a button
-    asks Hop to change the page location
-    -}
     NavigateTo path ->
       ( model, Effects.map HopAction (Hop.navigateTo path) )
 
-    {-
-    ShowPlayers and ShowPlayerEdit
-    Actions called after a location change happens
-    these are triggered by Hop
-    -}
     ShowArtists payload ->
       ( { model | view = ArtistsView, routerPayload = payload }, Effects.none )
 
@@ -91,6 +83,9 @@ update action model =
 
     ShowArtist payload ->
       ( { model | view = ArtistView, routerPayload = payload }, Effects.none )
+
+    ShowAlbum payload ->
+      ( { model | view = AlbumView, routerPayload = payload }, Effects.none )
 
     _ ->
       ( model, Effects.none )
@@ -110,6 +105,7 @@ routes =
   , ( "/artist/:artist/edit", ShowArtistEdit )
   , ( "/artist/:artist", ShowArtist )
   , ( "/albums", ShowAlbums )
+  , ( "/album/:album", ShowAlbum )
   ]
 
 

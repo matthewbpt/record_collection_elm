@@ -1,6 +1,7 @@
 module Artists.Actions (..) where
 
 import Artists.Models exposing (Artist)
+import Albums.Models exposing (Album)
 import Hop
 import Http
 
@@ -8,6 +9,7 @@ import Http
 type Action
   = NoOp
   | ListArtists
+  | ListAlbums
   | CreateOrUpdateArtist Artist
   | SaveArtist Artist
   | SaveArtistDone (Result Http.Error Artist)
@@ -18,3 +20,4 @@ type Action
   | FilterArtists String
   | DeleteArtist Artist
   | DeleteArtistDone (Result Http.Error Artist)
+  | ShowAlbum Album

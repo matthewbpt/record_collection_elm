@@ -27,6 +27,13 @@ update action model =
       in
         ( model, Effects.map HopAction (Hop.navigateTo path) )
 
+    ListAlbums ->
+      let
+        path =
+          "/albums/"
+      in
+        ( model, Effects.map HopAction (Hop.navigateTo path) )
+
     CreateOrUpdateArtist artist ->
       let
         filteredArtists =
@@ -102,6 +109,13 @@ update action model =
       let
         path =
           "/artist/" ++ artist.name
+      in
+        ( model, Effects.map HopAction (Hop.navigateTo path) )
+
+    ShowAlbum album ->
+      let
+        path =
+          "/album/" ++ album.title
       in
         ( model, Effects.map HopAction (Hop.navigateTo path) )
 

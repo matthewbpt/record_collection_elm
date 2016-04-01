@@ -1,11 +1,13 @@
 module View (..) where
 
 import Html exposing (..)
+import Http
 import Dict
 import Actions exposing (..)
 import Models exposing (..)
 import Routing
 import Albums.List
+import Albums.AlbumView
 import Artists.List
 import Artists.Edit
 import Artists.ArtistView
@@ -44,6 +46,9 @@ page address model =
     Routing.NotFoundView ->
       notFoundView
 
+    Routing.AlbumView ->
+      albumViewPage address model
+
 
 albumsPage : Signal.Address Action -> AppModel -> Html.Html
 albumsPage address model =
@@ -72,6 +77,7 @@ artistViewPage address model =
       model.routing.routerPayload.params
         |> Dict.get "artist"
         |> Maybe.withDefault ""
+        |> Http.uriDecode
 
     maybeArtist =
       model.artists
@@ -98,6 +104,7 @@ artistEditPage address model =
       model.routing.routerPayload.params
         |> Dict.get "artist"
         |> Maybe.withDefault ""
+        |> Http.uriDecode
 
     maybeArtist =
       model.artists
@@ -116,6 +123,33 @@ artistEditPage address model =
             }
         in
           Artists.Edit.view (Signal.forwardTo address ArtistsAction) viewModel
+
+      Nothing ->
+        notFoundView
+
+
+albumViewPage : Signal.Address Action -> AppModel -> Html.Html
+albumViewPage address model =
+  let
+    album =
+      model.routing.routerPayload.params
+        |> Dict.get "album"
+        |> Maybe.withDefault ""
+        |> Http.uriDecode
+
+    maybeAlbum =
+      model.albums
+        |> List.filter (\a -> a.title == album)
+        |> List.head
+  in
+    case maybeAlbum of
+      Just album ->
+        let
+          viewModel =
+            { album = album
+            }
+        in
+          Albums.AlbumView.albumView (Signal.forwardTo address AlbumsAction) viewModel
 
       Nothing ->
         notFoundView
